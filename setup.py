@@ -26,7 +26,7 @@ def find_version(*file_paths):
 
 
 setup(
-    name='keras-xxx',
+    name='keras-conv-vis',
     version=find_version('keras_conv_vis', '__init__.py'),
     packages=find_packages(),
     url='https://github.com/CyberZHG/keras-conv-vis',
