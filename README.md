@@ -1,9 +1,7 @@
 # Keras Convolution Visualization
 
-[![Travis](https://travis-ci.org/CyberZHG/keras-conv-vis.svg)](https://travis-ci.org/CyberZHG/keras-conv-vis)
+[![Travis](https://travis-ci.com/CyberZHG/keras-conv-vis.svg?branch=master)](https://travis-ci.org/CyberZHG/keras-conv-vis)
 [![Coverage](https://coveralls.io/repos/github/CyberZHG/keras-conv-vis/badge.svg?branch=master)](https://coveralls.io/github/CyberZHG/keras-conv-vis)
-![License](https://img.shields.io/pypi/l/keras-conv-vis.svg)
-
 ![](https://img.shields.io/badge/keras-tensorflow-blue.svg)
 ![](https://img.shields.io/badge/keras-tf.keras-blue.svg)
 
@@ -43,6 +41,9 @@ gradient = (gradient * 255.0).astype(np.uint8)
 visualization = Image.fromarray(gradient)
 ```
 
-| Input | Gradient | Deconvnet without Pooling Switches | Guided Backpropagation |
-|:-:|:-:|:-:|:-:|
-|![](./samples/cat.jpg)|![](./samples/cat_gradient_relevant.jpg)|![](./samples/cat_deconvnet_relevant.jpg)|![](./samples/cat_guided_relevant.jpg)|
+| Type | Visualization |
+|:-:|:-:|
+| Input | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat.jpg" width="224" height="224" /> |
+| Gradient | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_gradient_relevant.jpg" width="224" height="224" /> |
+| Deconvnet without Pooling Switches | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_deconvnet_relevant.jpg" width="224" height="224" /> |
+| Guided Backpropagation | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_guided_relevant.jpg" width="224" height="224" /> |
