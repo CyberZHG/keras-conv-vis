@@ -2,8 +2,6 @@
 
 [![Travis](https://travis-ci.org/CyberZHG/keras-conv-vis.svg)](https://travis-ci.org/CyberZHG/keras-conv-vis)
 [![Coverage](https://coveralls.io/repos/github/CyberZHG/keras-conv-vis/badge.svg?branch=master)](https://coveralls.io/github/CyberZHG/keras-conv-vis)
-[![Version](https://img.shields.io/pypi/v/keras-conv-vis.svg)](https://pypi.org/project/keras-conv-vis/)
-![Downloads](https://img.shields.io/pypi/dm/keras-conv-vis.svg)
 ![License](https://img.shields.io/pypi/l/keras-conv-vis.svg)
 
 ![](https://img.shields.io/badge/keras-tensorflow-blue.svg)
@@ -18,3 +16,9 @@ pip install git+https://github.com/cyberzhg/keras-conv-vis
 ```
 
 ## 使用
+
+See https://arxiv.org/pdf/1412.6806.pdf and [demo](./demo/guided_backpropagation.py).
+
+| Input | Gradient | Deconvnet without Pooling Switches | Guided Backpropagation |
+|:-:|:-:|:-:|:-:|
+|![](./samples/cat.jpg)|![](./samples/cat_gradient_relevant.jpg)|![](./samples/cat_deconvnet_relevant.jpg)|![](./samples/cat_guided_relevant.jpg)|

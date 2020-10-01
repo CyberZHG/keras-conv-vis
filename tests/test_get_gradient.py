@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import numpy as np
 
-from keras_conv_vis import get_gradient, Categorical, replace_relu
+from keras_conv_vis import get_gradient, Categorical
 from keras_conv_vis.backend import keras
 
 
