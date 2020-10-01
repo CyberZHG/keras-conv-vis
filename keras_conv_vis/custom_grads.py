@@ -3,7 +3,7 @@ import tensorflow as tf
 from .backend import keras
 
 __all__ = [
-    'CustomReLULayer',
+    'CustomReLU',
     'backward_deconvnet_relu', 'guided_backpropagation_relu',
 ]
 
@@ -30,7 +30,7 @@ def guided_backpropagation_relu(x):
     return tf.nn.relu(x), grad
 
 
-class CustomReLULayer(keras.layers.Layer):
+class CustomReLU(keras.layers.Layer):
 
     custom_objects = {
         'deconvnet': backward_deconvnet_relu,

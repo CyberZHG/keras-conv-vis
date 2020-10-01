@@ -1,7 +1,8 @@
 from copy import deepcopy
 
 from .backend import keras
-from .custom_grads import CustomReLULayer
+from .backend import backend as K
+from .custom_grads import CustomReLU
 
 __all__ = ['replace_layers', 'replace_relu']
 
@@ -38,8 +39,6 @@ def replace_layers(model: keras.models.Model,
                 act_name = _config['activation']
                 if act_name in activation_mapping:
                     _config['activation'] = _replace_item(act_name, activation_mapping[act_name])
-            if 'name' in _config:
-                _config['name'] = prefix + _config['name']
             for key, val in _config.items():
                 _config[key] = _replace(val)
         elif isinstance(_config, list):
@@ -47,9 +46,10 @@ def replace_layers(model: keras.models.Model,
         return _config
 
     new_config = _replace(config)
-    new_model = model.__class__.from_config(new_config, custom_objects=custom_objects)
+    with K.name_scope(prefix):
+        new_model = model.__class__.from_config(new_config, custom_objects=custom_objects)
     for layer in model.layers:
-        new_model.get_layer(prefix + layer.name).set_weights(layer.get_weights())
+        new_model.get_layer(layer.name).set_weights(layer.get_weights())
 
     return new_model
 
@@ -69,14 +69,16 @@ def replace_relu(model: keras.models.Model,
     if custom_objects is None:
         custom_objects = {}
 
-    custom_relu = CustomReLULayer(relu_type=relu_type)
+    custom_relu = CustomReLU(relu_type=relu_type)
     custom_relu_name = custom_relu.relu.__name__
-    relu_config = {'class_name': CustomReLULayer.__name__, 'config': custom_relu.get_config()}
-    custom_objects[CustomReLULayer.__name__] = CustomReLULayer
+    relu_config = custom_relu.get_config()
+    custom_objects[CustomReLU.__name__] = CustomReLU
     custom_objects[custom_relu_name] = custom_relu.relu
 
     def _replace_relu_layer(layer_config):
-        new_config = deepcopy(relu_config)
+        new_config = deepcopy(layer_config)
+        new_config['class_name'] = CustomReLU.__name__
+        new_config['config'] = deepcopy(relu_config)
         new_config['config']['name'] = layer_config['config']['name']
         return new_config
 

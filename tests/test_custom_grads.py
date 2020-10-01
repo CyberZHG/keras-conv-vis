@@ -3,7 +3,7 @@ from unittest import TestCase
 import numpy as np
 import tensorflow as tf
 
-from keras_conv_vis import backward_deconvnet_relu, guided_backpropagation_relu, CustomReLULayer
+from keras_conv_vis import backward_deconvnet_relu, guided_backpropagation_relu, CustomReLU
 from keras_conv_vis.backend import keras
 from keras_conv_vis.backend import backend as K
 
@@ -59,12 +59,12 @@ class TestCustomGrads(TestCase):
         input_length = 4
 
         model = keras.models.Sequential()
-        custom_relu_layer = CustomReLULayer('guided')
+        custom_relu_layer = CustomReLU('guided')
         model.add(custom_relu_layer)
         model.build((None, input_length,))
         model.compile(optimizer='sgd', loss='mse')
         config = model.get_config()
-        model = keras.models.Sequential.from_config(config, {'CustomReLULayer': CustomReLULayer})
+        model = keras.models.Sequential.from_config(config, {'CustomReLU': CustomReLU})
         model.summary()
 
         sample_input = np.array([[-12.1, 4.4, 0.4, 1.4]])
@@ -79,4 +79,4 @@ class TestCustomGrads(TestCase):
 
     def test_custom_relu_layer_not_implemented(self):
         with self.assertRaises(NotImplementedError):
-            CustomReLULayer(relu_type='INVALID')
+            CustomReLU(relu_type='INVALID')
