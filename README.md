@@ -17,7 +17,31 @@ pip install git+https://github.com/cyberzhg/keras-conv-vis
 
 ## Guided Backpropagation
 
-See https://arxiv.org/pdf/1412.6806.pdf and [demo](./demo/guided_backpropagation.py).
+See [the paper](https://arxiv.org/pdf/1412.6806.pdf) and [demo](./demo/guided_backpropagation.py).
+
+```python
+import keras
+import numpy as np
+from PIL import Image
+
+from keras_conv_vis import replace_relu, get_gradient, Categorical
+
+model = keras.applications.MobileNetV2()
+# Replace all the ReLUs with guided backpropagation
+model = replace_relu(model, relu_type='guided')
+gradient_model = keras.models.Sequential()
+gradient_model.add(model)
+# Activate only the target class
+gradient_model.add(Categorical(284))  # 284 is the siamese cat in ImageNet
+# Get the gradient
+gradients = get_gradient(gradient_model, inputs)
+
+# Normalize gradient and convert it to image
+gradient = gradients.numpy()[0]
+gradient = (gradient - np.min(gradient)) / (np.max(gradient) - np.min(gradient) + 1e-4)
+gradient = (gradient * 255.0).astype(np.uint8)
+visualization = Image.fromarray(gradient)
+```
 
 | Input | Gradient | Deconvnet without Pooling Switches | Guided Backpropagation |
 |:-:|:-:|:-:|:-:|
