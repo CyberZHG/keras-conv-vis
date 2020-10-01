@@ -27,13 +27,13 @@ def find_version(*file_paths):
 
 setup(
     name='keras-xxx',
-    version=find_version('keras_xxx', '__init__.py'),
+    version=find_version('keras_conv_vis', '__init__.py'),
     packages=find_packages(),
-    url='https://github.com/CyberZHG/keras-xxx',
+    url='https://github.com/CyberZHG/keras-conv-vis',
     license='MIT',
     author='CyberZHG',
     author_email='CyberZHG@users.noreply.github.com',
-    description='XXX implemented in Keras',
+    description='Convolution visualization',
     long_description=read_file('README.md'),
     long_description_content_type='text/markdown',
     install_requires=get_requirements('requirements.txt'),
