@@ -6,3 +6,4 @@ nose
 pycodestyle
 coverage
 Pillow
+matplotlib
