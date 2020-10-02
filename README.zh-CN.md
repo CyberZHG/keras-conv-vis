@@ -43,13 +43,12 @@ gradient = (gradient * 255.0).astype(np.uint8)
 visualization = Image.fromarray(gradient)
 ```
 
-| 类别 | 可视化 |
-|:-:|:-:|
-| 输入 | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat.jpg" width="224" height="224" /> |
-| 梯度 | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_gradient_relevant.jpg" width="224" height="224" /> |
-| Deconvnet without Pooling Switches | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_deconvnet_relevant.jpg" width="224" height="224" /> |
-| Guided Backpropagation | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_guided_relevant.jpg" width="224" height="224" /> |
-
+| 类别 | 相关 | 不相关 |
+|:-:|:-:|:-:|
+| 输入 | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat.jpg" width="224" height="224" /> | |
+| 梯度 | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_gradient_relevant.jpg" width="224" height="224" /> | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_gradient_irrelevant.jpg" width="224" height="224" /> |
+| Deconvnet without Pooling Switches | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_deconvnet_relevant.jpg" width="224" height="224" /> | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_deconvnet_irrelevant.jpg" width="224" height="224" /> |
+| Guided Backpropagation | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_guided_relevant.jpg" width="224" height="224" /> | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_guided_irrelevant.jpg" width="224" height="224" /> |
 
 ## Grad-CAM
 
@@ -97,7 +96,7 @@ cam = grad_cam(
 )[0]
 ```
 
-| Type | Input | Relevant CAM | Irrelevant CAM|
+| 类别 | 输入 | 相关CAM | 不相关CAM|
 |:-:|:-:|:-:|:-:|
 | Grad-CAM | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat.jpg" width="224" height="224" /> | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_grad-cam_relevant.jpg" width="224" height="224" /> | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_grad-cam_irrelevant.jpg" width="224" height="224" /> |
 | Grad-CAM++ |  | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_grad-cam++_relevant.jpg" width="224" height="224" /> | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_grad-cam++_irrelevant.jpg" width="224" height="224" /> |
