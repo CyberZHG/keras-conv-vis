@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import numpy as np
 
-from keras_conv_vis import get_gradient, Categorical, split_model_by_layer
+from keras_conv_vis import get_gradient, Categorical, split_model_by_layer, grad_cam
 from keras_conv_vis.backend import keras
 
 
@@ -26,3 +26,11 @@ class TestGetGradient(TestCase):
         gradient_model.add(Categorical(7))
         gradients = get_gradient([head, gradient_model], np.random.random((1, 224, 224, 3)))
         self.assertEqual(2, len(gradients))
+
+    def test_grad_cam(self):
+        model = keras.applications.MobileNetV2()
+        cam = grad_cam(model,
+                       layer_cut='Conv_1',
+                       inputs=np.random.random((3, 224, 224, 3)),
+                       target_class=0)
+        self.assertEqual((3, 7, 7), cam.shape)

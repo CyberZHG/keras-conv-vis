@@ -5,7 +5,7 @@ import numpy as np
 
 from .backend import keras
 
-__all__ = ['Categorical', 'get_gradient', 'split_model_by_layer']
+__all__ = ['Categorical', 'get_gradient', 'split_model_by_layer', 'grad_cam']
 
 
 class Categorical(keras.layers.Layer):
@@ -106,3 +106,40 @@ def split_model_by_layer(model: keras.models.Model,
             outputs.append(mappings[layer.name])
     tail = keras.models.Model(mappings[layer_cut.name], outputs)
     return head, tail
+
+
+def grad_cam(model: keras.models.Model,
+             layer_cut: Union[str, keras.layers.Layer],
+             inputs: Union[np.ndarray, tf.Tensor, List[Union[np.ndarray, tf.Tensor]]],
+             target_class: int,
+             epsilon: float = 1e-4):
+    """Get the class activation map (CAM) based on the gradient.
+
+    @see https://arxiv.org/abs/1610.02391
+
+
+    :param model: The keras model.
+    :param layer_cut: The layer whose output will be cut. The layer must be a cut point,
+                      a.k.a., the output edge is a bridge.
+    :param inputs: The batched input data.
+    :param target_class: The index of the target class.
+    :param epsilon: The small number used for the stability of normalization.
+    :return:
+    """
+    # Split model by the last convolutional layer
+    head, tail = split_model_by_layer(model, layer_cut)
+    last_conv_output = head(inputs)
+    gradient_model = keras.models.Sequential()
+    gradient_model.add(tail)
+    gradient_model.add(Categorical(target_class))
+    gradients = get_gradient(gradient_model, last_conv_output)
+
+    # Calculate Grad-CAM
+    gradient = gradients.numpy()
+    gradient = np.expand_dims(np.mean(gradient, axis=(1, 2)), axis=(1, 2))
+    grad_cam = np.mean(last_conv_output.numpy() * gradient, axis=-1)
+    grad_cam = grad_cam * (grad_cam > 0).astype(grad_cam.dtype)
+
+    # Normalization
+    grad_cam = (grad_cam - np.min(grad_cam)) / (np.max(grad_cam) - np.min(grad_cam) + epsilon)
+    return grad_cam

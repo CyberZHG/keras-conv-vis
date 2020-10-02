@@ -58,30 +58,15 @@ visualization = Image.fromarray(gradient)
 
 ```python
 import keras
-import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
 
-from keras_conv_vis import split_model_by_layer, get_gradient, Categorical
+from keras_conv_vis import grad_cam
 
 model = keras.applications.MobileNetV2()
-# 将模型从最后一个卷积处分开，计算出中间结果
-head, tail = split_model_by_layer(model, 'Conv_1')
-last_conv_output = head(inputs)
-# 给最后一个卷积计算梯度
-gradient_model = keras.models.Sequential()
-gradient_model.add(tail)
-gradient_model.add(Categorical(284))  # ImageNet第284类是暹罗猫
-gradients = get_gradient(gradient_model, last_conv_output)
-
-# 计算Grad-CAM
-gradient = gradients.numpy()[0]
-gradient = np.mean(gradient, axis=(0, 1))  # 根据梯度计算每一层输出的权重
-grad_cam = np.mean(last_conv_output.numpy()[0] * gradient, axis=-1)  # 对卷积输出进行加权求和
-grad_cam = grad_cam * (grad_cam > 0).astype(grad_cam.dtype)  # Grad-CAM输出需要经过ReLU
+cam = grad_cam(model=model, layer_cut='Conv_1', inputs=inputs, target_class=284)[0]
 
 # 可视化
-grad_cam = (grad_cam - np.min(grad_cam)) / (np.max(grad_cam) - np.min(grad_cam) + 1e-4)
 heatmap = plt.get_cmap('jet')(grad_cam, bytes=True)
 heatmap = Image.fromarray(heatmap[..., :3], mode='RGB')
 heatmap = heatmap.resize((original_image.width, original_image.height), resample=Image.BILINEAR)

@@ -4,7 +4,7 @@ from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
 
-from keras_conv_vis import split_model_by_layer, get_gradient, Categorical
+from keras_conv_vis import grad_cam
 from keras_conv_vis.backend import keras
 
 CLASS_CAT = 284
@@ -23,24 +23,11 @@ inputs = inputs * 2.0 - 1.0
 def process(target_class,
             cmap='jet',
             alpha=0.5):
-    # Build model and get gradients
     model = keras.applications.MobileNetV2()
-    head, tail = split_model_by_layer(model, 'Conv_1')
-    last_conv_output = head(inputs)
-    gradient_model = keras.models.Sequential()
-    gradient_model.add(tail)
-    gradient_model.add(Categorical(target_class))
-    gradients = get_gradient(gradient_model, last_conv_output)
-
-    # Calculate Grad-CAM
-    gradient = gradients.numpy()[0]
-    gradient = np.mean(gradient, axis=(0, 1))
-    grad_cam = np.mean(last_conv_output.numpy()[0] * gradient, axis=-1)
-    grad_cam = grad_cam * (grad_cam > 0).astype(grad_cam.dtype)
+    cam = grad_cam(model=model, layer_cut='Conv_1', inputs=inputs, target_class=target_class)[0]
 
     # Visualization
-    grad_cam = (grad_cam - np.min(grad_cam)) / (np.max(grad_cam) - np.min(grad_cam) + 1e-4)
-    heatmap = plt.get_cmap(cmap)(grad_cam, bytes=True)
+    heatmap = plt.get_cmap(cmap)(cam, bytes=True)
     heatmap = Image.fromarray(heatmap[..., :3], mode='RGB')
     heatmap = heatmap.resize((original_image.width, original_image.height), resample=Image.BILINEAR)
     return Image.blend(original_image, heatmap, alpha=alpha)
