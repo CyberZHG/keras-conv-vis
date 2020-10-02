@@ -1,3 +1,4 @@
+from typing import Optional
 from copy import deepcopy
 
 from .backend import keras
@@ -8,8 +9,8 @@ __all__ = ['replace_layers', 'replace_relu']
 
 
 def replace_layers(model: keras.models.Model,
-                   layer_mapping: dict,
-                   activation_mapping: dict,
+                   layer_mapping: Optional[dict] = None,
+                   activation_mapping: Optional[dict] = None,
                    custom_objects: dict = None,
                    prefix: str = 'mapped_'):
     """Replace all the matched layers in the original model and return a new one.
@@ -23,6 +24,10 @@ def replace_layers(model: keras.models.Model,
     :return: The mapped new model.
     """
     config = model.get_config()
+    if layer_mapping is None:
+        layer_mapping = {}
+    if activation_mapping is None:
+        activation_mapping = {}
 
     def _replace_item(_config, mapping):
         if callable(mapping):

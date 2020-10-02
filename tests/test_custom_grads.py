@@ -23,7 +23,6 @@ class TestCustomGrads(TestCase):
         model.add(custom_relu_layer)
         model.add(keras.layers.Lambda(lambda x: self.alternating_toy_loss(input_length)(x)))
         model.build((None, input_length,))
-        model.summary()
         model.compile(optimizer='sgd', loss='mse')
 
         sample_input = np.array([[-12.1, 4.4, 0.4, 1.4]])
@@ -44,7 +43,6 @@ class TestCustomGrads(TestCase):
         model.add(keras.layers.Lambda(lambda x: self.alternating_toy_loss(input_length)(x)))
         model.build((None, input_length,))
         model.compile(optimizer='sgd', loss='mse')
-        model.summary()
 
         sample_input = np.array([[-12.1, 4.4, 0.4, 1.4]])
         with tf.GradientTape() as tape:
@@ -65,7 +63,6 @@ class TestCustomGrads(TestCase):
         model.compile(optimizer='sgd', loss='mse')
         config = model.get_config()
         model = keras.models.Sequential.from_config(config, {'CustomReLU': CustomReLU})
-        model.summary()
 
         sample_input = np.array([[-12.1, 4.4, 0.4, 1.4]])
         with tf.GradientTape() as tape:

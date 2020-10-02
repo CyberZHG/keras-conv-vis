@@ -53,8 +53,13 @@ visualization = Image.fromarray(gradient)
 
 ## Grad-CAM
 
+参考：
+* [Grad-CAM](https://arxiv.org/pdf/1610.02391.pdf)
+* [Grad-CAM++](https://arxiv.org/pdf/1710.11063.pdf).
+* [Grad-CAM示例](https://github.com/CyberZHG/keras-conv-vis/blob/master/demo/grad_cam.py)
+* [Grad-CAM++示例](https://github.com/CyberZHG/keras-conv-vis/blob/master/demo/grad_cam++.py)
 
-参考[论文](https://arxiv.org/abs/1610.02391)和[样例](https://github.com/CyberZHG/keras-conv-vis/blob/master/demo/grad_cam.py)。
+Grad-CAM:
 
 ```python
 import keras
@@ -73,6 +78,26 @@ heatmap = heatmap.resize((original_image.width, original_image.height), resample
 visualization = Image.blend(original_image, heatmap, alpha=0.5)
 ```
 
-| Input | Relevant CAM | Irrelevant CAM|
-|:-:|:-:|:-:|
-| <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat.jpg" width="224" height="224" /> | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_grad-cam_relevant.jpg" width="224" height="224" /> | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_grad-cam_irrelevant.jpg" width="224" height="224" /> |
+Grad-CAM++:
+
+```python
+import keras
+
+from keras_conv_vis import grad_cam, replace_layers
+
+model = keras.applications.MobileNetV2()
+# 最后一层的`softmax`需要被去除。
+model = replace_layers(model, activation_mapping={'softmax': 'linear'})
+cam = grad_cam(
+    model=model,
+    layer_cut='Conv_1',
+    inputs=inputs,
+    target_class=284,
+    plus=True,  # 启用Grad-CAM++
+)[0]
+```
+
+| Type | Input | Relevant CAM | Irrelevant CAM|
+|:-:|:-:|:-:|:-:|
+| Grad-CAM | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat.jpg" width="224" height="224" /> | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_grad-cam_relevant.jpg" width="224" height="224" /> | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_grad-cam_irrelevant.jpg" width="224" height="224" /> |
+| Grad-CAM++ |  | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_grad-cam++_relevant.jpg" width="224" height="224" /> | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_grad-cam++_irrelevant.jpg" width="224" height="224" /> |

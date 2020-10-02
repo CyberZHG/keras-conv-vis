@@ -4,6 +4,7 @@ import tensorflow as tf
 import numpy as np
 
 from .backend import keras
+from .backend import backend as K
 
 __all__ = ['Categorical', 'get_gradient', 'split_model_by_layer', 'grad_cam']
 
@@ -112,10 +113,12 @@ def grad_cam(model: keras.models.Model,
              layer_cut: Union[str, keras.layers.Layer],
              inputs: Union[np.ndarray, tf.Tensor, List[Union[np.ndarray, tf.Tensor]]],
              target_class: int,
-             epsilon: float = 1e-4):
+             epsilon: float = 1e-4,
+             plus: bool = False):
     """Get the class activation map (CAM) based on the gradient.
 
-    @see https://arxiv.org/abs/1610.02391
+    @see Grad-CAM: https://arxiv.org/pdf/1610.02391.pdf
+    @see Grad-CAM++: https://arxiv.org/pdf/1710.11063.pdf
 
 
     :param model: The keras model.
@@ -124,6 +127,8 @@ def grad_cam(model: keras.models.Model,
     :param inputs: The batched input data.
     :param target_class: The index of the target class.
     :param epsilon: The small number used for the stability of normalization.
+    :param plus: Whether to use Grad-CAM++. Note that the activations like `softmax`
+                 in the last layer should be removed before invoking this function.
     :return:
     """
     # Split model by the last convolutional layer
@@ -131,15 +136,27 @@ def grad_cam(model: keras.models.Model,
     last_conv_output = head(inputs)
     gradient_model = keras.models.Sequential()
     gradient_model.add(tail)
+    if plus:
+        gradient_model.add(keras.layers.Lambda(lambda x: K.exp(x)))
     gradient_model.add(Categorical(target_class))
     gradients = get_gradient(gradient_model, last_conv_output)
 
     # Calculate Grad-CAM
     gradient = gradients.numpy()
-    gradient = np.expand_dims(np.mean(gradient, axis=(1, 2)), axis=(1, 2))
-    grad_cam = np.mean(last_conv_output.numpy() * gradient, axis=-1)
-    grad_cam = grad_cam * (grad_cam > 0).astype(grad_cam.dtype)
+    conv_output = last_conv_output.numpy()
+    if plus:
+        grad_2 = gradient * gradient
+        grad_3 = gradient * grad_2
+        alpha = grad_2 / (2 * grad_2 + np.sum(conv_output * grad_3, axis=(1, 2), keepdims=True) + epsilon)
+        alpha = alpha * (gradient > 0).astype(alpha.dtype)
+        alpha = alpha / (np.sum(alpha, axis=(1, 2), keepdims=True) + epsilon)
+        weights = np.sum(alpha * np.maximum(0.0, gradient), axis=(1, 2), keepdims=True)
+    else:
+        weights = np.mean(gradient, axis=(1, 2), keepdims=True)
+    cam = np.mean(conv_output * weights, axis=-1)
+    cam = np.maximum(0.0, cam)
 
     # Normalization
-    grad_cam = (grad_cam - np.min(grad_cam)) / (np.max(grad_cam) - np.min(grad_cam) + epsilon)
-    return grad_cam
+    cam = cam - np.min(cam)
+    cam = cam / (np.max(cam) + epsilon)
+    return cam

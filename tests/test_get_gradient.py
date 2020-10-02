@@ -2,7 +2,8 @@ from unittest import TestCase
 
 import numpy as np
 
-from keras_conv_vis import get_gradient, Categorical, split_model_by_layer, grad_cam
+from keras_conv_vis import (get_gradient, Categorical, replace_layers,
+                            split_model_by_layer, grad_cam)
 from keras_conv_vis.backend import keras
 
 
@@ -33,4 +34,14 @@ class TestGetGradient(TestCase):
                        layer_cut='Conv_1',
                        inputs=np.random.random((3, 224, 224, 3)),
                        target_class=0)
+        self.assertEqual((3, 7, 7), cam.shape)
+
+    def test_grad_cam_pp(self):
+        model = keras.applications.MobileNetV2()
+        model = replace_layers(model, activation_mapping={'softmax': 'linear'})
+        cam = grad_cam(model,
+                       layer_cut='Conv_1',
+                       inputs=np.random.random((3, 224, 224, 3)),
+                       target_class=0,
+                       plus=True)
         self.assertEqual((3, 7, 7), cam.shape)

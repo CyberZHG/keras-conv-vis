@@ -17,7 +17,7 @@ The codes only work when eager execution is enabled.
 
 ## Guided Backpropagation
 
-See [the paper](https://arxiv.org/pdf/1412.6806.pdf) and [demo](https://github.com/CyberZHG/keras-conv-vis/blob/master/demo/guided_backpropagation.py).
+See [guided backpropagation](https://arxiv.org/pdf/1412.6806.pdf) and the [demo](https://github.com/CyberZHG/keras-conv-vis/blob/master/demo/guided_backpropagation.py).
 
 ```python
 import keras
@@ -51,9 +51,15 @@ visualization = Image.fromarray(gradient)
 | Guided Backpropagation | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_guided_relevant.jpg" width="224" height="224" /> |
 
 
-## Grad-CAM
+## Grad-CAM & Grad-CAM++
 
-See [the paper](https://arxiv.org/abs/1610.02391) and [demo](https://github.com/CyberZHG/keras-conv-vis/blob/master/demo/grad_cam.py).
+See:
+* [Grad-CAM](https://arxiv.org/pdf/1610.02391.pdf)
+* [Grad-CAM++](https://arxiv.org/pdf/1710.11063.pdf).
+* [Grad-CAM Demo](https://github.com/CyberZHG/keras-conv-vis/blob/master/demo/grad_cam.py)
+* [Grad-CAM++ Demo](https://github.com/CyberZHG/keras-conv-vis/blob/master/demo/grad_cam++.py)
+
+For Grad-CAM:
 
 ```python
 import keras
@@ -72,6 +78,26 @@ heatmap = heatmap.resize((original_image.width, original_image.height), resample
 visualization = Image.blend(original_image, heatmap, alpha=0.5)
 ```
 
-| Input | Relevant CAM | Irrelevant CAM|
-|:-:|:-:|:-:|
-| <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat.jpg" width="224" height="224" /> | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_grad-cam_relevant.jpg" width="224" height="224" /> | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_grad-cam_irrelevant.jpg" width="224" height="224" /> |
+For Grad-CAM++:
+
+```python
+import keras
+
+from keras_conv_vis import grad_cam, replace_layers
+
+model = keras.applications.MobileNetV2()
+# The `softmax` activation in the last layer should be removed.
+model = replace_layers(model, activation_mapping={'softmax': 'linear'})
+cam = grad_cam(
+    model=model,
+    layer_cut='Conv_1',
+    inputs=inputs,
+    target_class=284,
+    plus=True,  # Enable Grad-CAM++
+)[0]
+```
+
+| Type | Input | Relevant CAM | Irrelevant CAM|
+|:-:|:-:|:-:|:-:|
+| Grad-CAM | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat.jpg" width="224" height="224" /> | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_grad-cam_relevant.jpg" width="224" height="224" /> | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_grad-cam_irrelevant.jpg" width="224" height="224" /> |
+| Grad-CAM++ |  | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_grad-cam++_relevant.jpg" width="224" height="224" /> | <img src="https://github.com/CyberZHG/keras-conv-vis/raw/master/samples/cat_grad-cam++_irrelevant.jpg" width="224" height="224" /> |
