@@ -55,7 +55,7 @@ visualization = Image.fromarray(gradient)
 
 See:
 * [Grad-CAM](https://arxiv.org/pdf/1610.02391.pdf)
-* [Grad-CAM++](https://arxiv.org/pdf/1710.11063.pdf).
+* [Grad-CAM++](https://arxiv.org/pdf/1710.11063.pdf)
 * [Grad-CAM Demo](https://github.com/CyberZHG/keras-conv-vis/blob/master/demo/grad_cam.py)
 * [Grad-CAM++ Demo](https://github.com/CyberZHG/keras-conv-vis/blob/master/demo/grad_cam++.py)
 
