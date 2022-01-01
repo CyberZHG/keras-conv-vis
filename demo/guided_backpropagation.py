@@ -2,9 +2,9 @@ import os
 
 from PIL import Image
 import numpy as np
+from tensorflow import keras
 
 from keras_conv_vis import replace_relu, get_gradient, Categorical
-from keras_conv_vis.backend import keras
 
 CLASS_CAT = 284
 CLASS_GUITAR = 546

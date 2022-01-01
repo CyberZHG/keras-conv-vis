@@ -2,10 +2,10 @@ from unittest import TestCase
 
 import numpy as np
 import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import backend as K
 
 from keras_conv_vis import backward_deconvnet_relu, guided_backpropagation_relu, CustomReLU
-from keras_conv_vis.backend import keras
-from keras_conv_vis.backend import backend as K
 
 
 class TestCustomGrads(TestCase):

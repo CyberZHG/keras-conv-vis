@@ -1,6 +1,5 @@
 import tensorflow as tf
-
-from .backend import keras
+from tensorflow import keras
 
 __all__ = [
     'CustomReLU',

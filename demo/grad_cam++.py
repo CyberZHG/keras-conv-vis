@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from keras_conv_vis import grad_cam, replace_layers
-from keras_conv_vis.backend import keras
+from tensorflow import keras
 
 CLASS_CAT = 284
 CLASS_GUITAR = 546

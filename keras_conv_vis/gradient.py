@@ -2,9 +2,8 @@ from typing import Optional, List, Union
 
 import tensorflow as tf
 import numpy as np
-
-from .backend import keras
-from .backend import backend as K
+from tensorflow import keras
+from tensorflow.keras import backend as K
 
 __all__ = ['Categorical', 'get_gradient', 'split_model_by_layer', 'grad_cam']
 

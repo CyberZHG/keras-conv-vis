@@ -1,7 +1,8 @@
 from unittest import TestCase
 
+from tensorflow import keras
+
 from keras_conv_vis import replace_layers, replace_relu
-from keras_conv_vis.backend import keras
 
 
 class TestModelReplace(TestCase):

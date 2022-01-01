@@ -1,10 +1,5 @@
 # Keras Convolution Visualization
 
-[![Travis](https://travis-ci.com/CyberZHG/keras-conv-vis.svg?branch=master)](https://travis-ci.org/CyberZHG/keras-conv-vis)
-[![Coverage](https://coveralls.io/repos/github/CyberZHG/keras-conv-vis/badge.svg?branch=master)](https://coveralls.io/github/CyberZHG/keras-conv-vis)
-![](https://img.shields.io/badge/keras-tensorflow-blue.svg)
-![](https://img.shields.io/badge/keras-tf.keras-blue.svg)
-
 \[[中文](https://github.com/CyberZHG/keras-conv-vis/blob/master/README.zh-CN.md)|[English](https://github.com/CyberZHG/keras-conv-vis/blob/master/README.md)\]
 
 ## 安装
@@ -20,7 +15,7 @@ pip install git+https://github.com/cyberzhg/keras-conv-vis
 参考[论文](https://arxiv.org/pdf/1412.6806.pdf)和[样例](./demo/guided_backpropagation.py)。
 
 ```python
-import keras
+from tensorflow import keras
 import numpy as np
 from PIL import Image
 
@@ -61,7 +56,7 @@ visualization = Image.fromarray(gradient)
 Grad-CAM:
 
 ```python
-import keras
+from tensorflow import keras
 import matplotlib.pyplot as plt
 from PIL import Image
 
@@ -80,7 +75,7 @@ visualization = Image.blend(original_image, heatmap, alpha=0.5)
 Grad-CAM++:
 
 ```python
-import keras
+from tensorflow import keras
 
 from keras_conv_vis import grad_cam, replace_layers
 
